@@ -13,14 +13,23 @@ from yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_l
 from yolo3.utils import get_random_data
 
 from tensorflow.python.lib.io import file_io  # for better file I/O
-
-
-def _open(path, mode='a'):
-    return file_io.FileIO(path, mode)
+import argparse
+from .gs_util import gs_open, gs_copy_file, gs_copy_dir
 
 
 def _main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("weights_stage", help='weights stage file path', type=str)
+    parser.add_argument("weights_final", help='weights final file path', type=str)
+    args = parser.parse_args()
+
+    weights_stage_path = args.weights_stage
+    weights_final_path = args.weights_final
+
     annotation_path = 'train.txt'
+    if not file_io.file_exists(annotation_path):
+        raise Exception('Please generate the dataset file `train.txt`')
+
     log_dir = 'logs/000/'
     classes_path = 'model_data/voc_classes.txt'
     anchors_path = 'model_data/yolo_anchors.txt'
@@ -30,13 +39,13 @@ def _main():
 
     input_shape = (416,416) # multiple of 32, hw
 
-    is_tiny_version = len(anchors)==6 # default setting
+    is_tiny_version = True  # len(anchors)==6 # default setting
     if is_tiny_version:
         model = create_tiny_model(input_shape, anchors, num_classes,
-            freeze_body=2, weights_path='model_data/tiny_yolo_weights.h5')
+            freeze_body=2)  # , weights_path='model_data/tiny_yolo_weights.h5')
     else:
         model = create_model(input_shape, anchors, num_classes,
-            freeze_body=2, weights_path='model_data/yolo_weights.h5') # make sure you know what you freeze
+            freeze_body=2)  # , weights_path='model_data/yolo_weights.h5') # make sure you know what you freeze
 
     logging = TensorBoard(log_dir=log_dir)
     checkpoint = ModelCheckpoint(log_dir + 'ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5',
@@ -45,7 +54,7 @@ def _main():
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=1)
 
     val_split = 0.1
-    with _open(annotation_path) as f:
+    with gs_open(annotation_path) as f:
         lines = f.readlines()
     np.random.seed(10101)
     np.random.shuffle(lines)
@@ -69,7 +78,9 @@ def _main():
                 epochs=50,
                 initial_epoch=0,
                 callbacks=[logging, checkpoint])
-        model.save_weights(log_dir + 'trained_weights_stage_1.h5')
+        trained_weights_stage_path = log_dir + 'trained_weights_stage_1.h5'
+        model.save_weights(trained_weights_stage_path)
+        gs_copy_file(weights_stage_path, trained_weights_stage_path)
 
     # Unfreeze and continue training, to fine-tune.
     # Train longer if the result is not good.
@@ -88,27 +99,29 @@ def _main():
             epochs=100,
             initial_epoch=50,
             callbacks=[logging, checkpoint, reduce_lr, early_stopping])
-        model.save_weights(log_dir + 'trained_weights_final.h5')
+        trained_final_path = log_dir + 'trained_weights_final.h5'
+        model.save_weights(trained_final_path)
+        gs_copy_file(trained_final_path, weights_final_path)
 
     # Further training if needed.
 
 
 def get_classes(classes_path):
     '''loads the classes'''
-    with _open(classes_path) as f:
+    with gs_open(classes_path) as f:
         class_names = f.readlines()
     class_names = [c.strip() for c in class_names]
     return class_names
 
 def get_anchors(anchors_path):
     '''loads the anchors from a file'''
-    with _open(anchors_path) as f:
+    with gs_open(anchors_path) as f:
         anchors = f.readline()
     anchors = [float(x) for x in anchors.split(',')]
     return np.array(anchors).reshape(-1, 2)
 
 
-def create_model(input_shape, anchors, num_classes, load_pretrained=True, freeze_body=2,
+def create_model(input_shape, anchors, num_classes, load_pretrained=False, freeze_body=2,
             weights_path='model_data/yolo_weights.h5'):
     '''create the training model'''
     K.clear_session() # get a new session
