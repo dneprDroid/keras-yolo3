@@ -12,6 +12,12 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, Ear
 from yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
 from yolo3.utils import get_random_data
 
+from tensorflow.python.lib.io import file_io  # for better file I/O
+
+
+def _open(path, mode='a'):
+    return file_io.FileIO(path, mode)
+
 
 def _main():
     annotation_path = 'train.txt'
@@ -39,7 +45,7 @@ def _main():
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=1)
 
     val_split = 0.1
-    with open(annotation_path) as f:
+    with _open(annotation_path) as f:
         lines = f.readlines()
     np.random.seed(10101)
     np.random.shuffle(lines)
@@ -89,14 +95,14 @@ def _main():
 
 def get_classes(classes_path):
     '''loads the classes'''
-    with open(classes_path) as f:
+    with _open(classes_path) as f:
         class_names = f.readlines()
     class_names = [c.strip() for c in class_names]
     return class_names
 
 def get_anchors(anchors_path):
     '''loads the anchors from a file'''
-    with open(anchors_path) as f:
+    with _open(anchors_path) as f:
         anchors = f.readline()
     anchors = [float(x) for x in anchors.split(',')]
     return np.array(anchors).reshape(-1, 2)
