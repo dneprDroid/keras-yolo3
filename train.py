@@ -14,7 +14,7 @@ from yolo3.utils import get_random_data
 
 from tensorflow.python.lib.io import file_io  # for better file I/O
 import argparse
-from .gs_util import gs_open, gs_copy_file, gs_copy_dir
+from utils.gs_util import gs_open, gs_copy_file
 
 
 def _main():
