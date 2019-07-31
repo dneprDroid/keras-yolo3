@@ -109,3 +109,4 @@ ENV/
 
 # Local datasets
 model_data/VOCdevkit
+train.txt

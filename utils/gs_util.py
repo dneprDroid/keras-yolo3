@@ -4,8 +4,12 @@ import io
 from PIL import Image
 
 
-def gs_open(path, mode='a'):
+def gs_open(path, mode='r'):
     return file_io.FileIO(path, mode)
+
+
+def gs_file_exists(path):
+    return file_io.file_exists(path)
 
 
 def gs_copy_dir(src, dest):

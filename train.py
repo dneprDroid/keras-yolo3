@@ -12,34 +12,40 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, Ear
 from yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
 from yolo3.utils import get_random_data
 
-from tensorflow.python.lib.io import file_io  # for better file I/O
 import argparse
-from utils.gs_util import gs_open, gs_copy_file
+from utils.gs_util import gs_open, gs_copy_file, gs_file_exists
 
 
+'''
+ Example: `python train.py --weights_stage stage.h5 --weights_final final.h5 --anchors_file model_data/tiny_yolo_anchors.txt`
+'''
 def _main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("weights_stage", help='weights stage file path', type=str)
-    parser.add_argument("weights_final", help='weights final file path', type=str)
+    parser.add_argument("--weights_stage", help='where to save the weights stage file', type=str)
+    parser.add_argument("--weights_final", help='where to save the weights final file', type=str)
+    parser.add_argument("--anchors_file", type=str)
     args = parser.parse_args()
 
     weights_stage_path = args.weights_stage
     weights_final_path = args.weights_final
+    anchors_path = args.anchors_file  # 'model_data/yolo_anchors.txt'
 
     annotation_path = 'train.txt'
-    if not file_io.file_exists(annotation_path):
+    if not gs_file_exists(annotation_path):
         raise Exception('Please generate the dataset file `train.txt`')
 
+    if not gs_file_exists(anchors_path):
+        raise Exception('Please set the anchors file path: '
+                        'model_data/tiny_yolo_anchors.txt or model_data/yolo_anchors.txt')
     log_dir = 'logs/000/'
     classes_path = 'model_data/voc_classes.txt'
-    anchors_path = 'model_data/yolo_anchors.txt'
     class_names = get_classes(classes_path)
     num_classes = len(class_names)
     anchors = get_anchors(anchors_path)
 
     input_shape = (416,416) # multiple of 32, hw
 
-    is_tiny_version = True  # len(anchors)==6 # default setting
+    is_tiny_version = len(anchors)==6 # default setting
     if is_tiny_version:
         model = create_tiny_model(input_shape, anchors, num_classes,
             freeze_body=2)  # , weights_path='model_data/tiny_yolo_weights.h5')
@@ -151,7 +157,7 @@ def create_model(input_shape, anchors, num_classes, load_pretrained=False, freez
 
     return model
 
-def create_tiny_model(input_shape, anchors, num_classes, load_pretrained=True, freeze_body=2,
+def create_tiny_model(input_shape, anchors, num_classes, load_pretrained=False, freeze_body=2,
             weights_path='model_data/tiny_yolo_weights.h5'):
     '''create the training model, for Tiny YOLOv3'''
     K.clear_session() # get a new session
@@ -166,6 +172,7 @@ def create_tiny_model(input_shape, anchors, num_classes, load_pretrained=True, f
     print('Create Tiny YOLOv3 model with {} anchors and {} classes.'.format(num_anchors, num_classes))
 
     if load_pretrained:
+        print('Loading pre-trained model...')
         model_body.load_weights(weights_path, by_name=True, skip_mismatch=True)
         print('Load weights {}.'.format(weights_path))
         if freeze_body in [1, 2]:
