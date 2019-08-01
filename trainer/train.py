@@ -24,7 +24,8 @@ def _main():
     parser.add_argument("--weights_stage", help='where to save the weights stage file', type=str)
     parser.add_argument("--weights_final", help='where to save the weights final file', type=str)
     parser.add_argument("--anchors_file", type=str)
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
+
 
     weights_stage_path = args.weights_stage
     weights_final_path = args.weights_final
