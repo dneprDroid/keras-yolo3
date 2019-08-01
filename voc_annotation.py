@@ -1,13 +1,15 @@
 import argparse
 import xml.etree.ElementTree as ET
 from os import getcwd
-from utils.gs_util import gs_open
+from utils.gs_util import gs_open, gs_file_exists
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--voc_path", help='path to VOC dataset, example: gs://VOCdevkit', type=str)
 args = parser.parse_args()
 voc_path = args.voc_path.replace("\\", "/")
+if not gs_file_exists(voc_path):
+    raise Exception("Can't find VOC dir at path: %s" % voc_path)
 
 # sets=[('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
 sets=[('2012', 'train')]
