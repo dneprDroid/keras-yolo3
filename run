@@ -9,6 +9,7 @@ job_dir=gs://${bucket_name}/${job_name}
 echo "Job dir: ${job_dir}"
 
 region=us-east1
+echo "Region: ${region}"
 
 
 
@@ -17,7 +18,7 @@ gcloud ml-engine jobs submit training ${job_name} --job-dir ${job_dir} \
   --runtime-version 1.9 \
   --module-name train --package-path ./  `# train.py` \
   --region ${region}                     `# Next, provide the params to train.py`\
-  --  --weights_stage "gs://${bucket_name}/${job_name}/weights_stage_exported.h5" \
-  --weights_final "gs://${bucket_name}/${job_name}/weights_final_exported.h5" \
+  --  --weights_stage "${job_dir}/weights_stage_exported.h5" \
+  --weights_final "${job_dir}/weights_final_exported.h5" \
   --anchors_file "model_data/tiny_yolo_anchors.txt"
 
