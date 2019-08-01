@@ -2,5 +2,5 @@
 read -p "Enter bucket name: " bucket_name
 echo "Bucket name: '${bucket_name}'"
 
-ehco "Copying from $1 to gs://${bucket_name}"
+echo "Copying from $1 to gs://${bucket_name}"
 gsutil cp -R $1 gs://${bucket_name}
