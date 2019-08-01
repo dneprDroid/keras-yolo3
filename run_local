@@ -12,7 +12,7 @@ echo "Job dir: ${job_dir}"
 
 gcloud ai-platform local train \
  --job-dir ${job_dir} \
- --module-name train   `# train.py` \
+ --module-name .train   `# train.py` \
  --package-path ./ \
  --distributed \
  --  `# Next, provide the params to train.py` \
