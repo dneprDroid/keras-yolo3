@@ -191,6 +191,7 @@ def create_tiny_model(input_shape, anchors, num_classes, load_pretrained=False, 
 
 def data_generator(annotation_lines, batch_size, input_shape, anchors, num_classes):
     '''data generator for fit_generator'''
+    print("Data generator...")
     n = len(annotation_lines)
     i = 0
     while True:
@@ -199,7 +200,9 @@ def data_generator(annotation_lines, batch_size, input_shape, anchors, num_class
         for b in range(batch_size):
             if i==0:
                 np.random.shuffle(annotation_lines)
-            image, box = get_random_data(annotation_lines[i], input_shape, random=True)
+            annotation_line = annotation_lines[i]
+            print("Processing %s" % annotation_line)
+            image, box = get_random_data(annotation_line, input_shape, random=True)
             image_data.append(image)
             box_data.append(box)
             i = (i+1) % n
