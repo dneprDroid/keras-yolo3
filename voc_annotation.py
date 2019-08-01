@@ -40,6 +40,7 @@ for year, image_set in sets:
     image_ids = gs_open(voc_path + '/VOC%s/ImageSets/Main/%s.txt'%(year, image_set)).read().strip().split()
     list_file = gs_open('%s_%s.txt'%(year, image_set), 'w')
     for image_id in image_ids:
+        print("Parsing file %s" % image_id)
         list_file.write('%s/VOC%s/JPEGImages/%s.jpg'%(voc_path, year, image_id))
         convert_annotation(year, image_id, list_file)
         list_file.write('\n')
