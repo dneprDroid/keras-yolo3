@@ -30,15 +30,15 @@ def _main():
     weights_final_path = args.weights_final
     anchors_path = args.anchors_file  # 'model_data/yolo_anchors.txt'
 
-    annotation_path = '2012_train.txt'
+    annotation_path = '../2012_train.txt'
     if not gs_file_exists(annotation_path):
         raise Exception('Please generate the dataset file `train.txt`')
 
     if not gs_file_exists(anchors_path):
         raise Exception('Please set the anchors file path: '
                         'model_data/tiny_yolo_anchors.txt or model_data/yolo_anchors.txt')
-    log_dir = 'logs/000/'
-    classes_path = 'model_data/voc_classes.txt'
+    log_dir = '../logs/000/'
+    classes_path = '../model_data/voc_classes.txt'
     class_names = get_classes(classes_path)
     num_classes = len(class_names)
     anchors = get_anchors(anchors_path)
