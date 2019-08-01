@@ -21,7 +21,6 @@ gcloud ml-engine jobs submit training ${job_name} --job-dir ${job_dir} \
   --module-name trainer.train   `# train.py` \
   --package-path ./trainer      \
   --region ${region}     \
-  --distributed          \
   --scale-tier BASIC_GPU \
   --  `# Next, provide the params to train.py` \
   --weights_stage "${job_dir}/weights_stage_exported.h5" \
