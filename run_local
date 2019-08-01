@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+read -p "Enter bucket name: " bucket_name
+job_name="ml_job_$(date +%Y%m%d_%H%M%S)"
+
+echo "Job name: ${job_name}"
+
+job_dir=gs://${bucket_name}/${job_name}
+echo "Job dir: ${job_dir}"
+
+gcloud ml-engine local train --job-dir ${job_dir} \
+ --module-name train   `# train.py` \
+ --package-path ./

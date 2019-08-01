@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+read -p "Enter bucket name: " bucket_name
+job_name="ml_job_$(date +%Y%m%d_%H%M%S)"
+
+echo "Job name: ${job_name}"
+
+job_dir=gs://${bucket_name}/${job_name}
+echo "Job dir: ${job_dir}"
+
+region=us-east1
+
+
+
+gcloud ml-engine jobs submit training ${job_name} --job-dir ${job_dir} \
+  --python-version 3.5 \
+  --runtime-version 1.9 \
+  --module-name train --package-path ./  `# train.py` \
+  --region ${region}                     `# Next, provide the params to train.py`\
+  --  --weights_stage "gs://${bucket_name}/${job_name}/weights_stage_exported.h5" \
+  --weights_final "gs://${bucket_name}/${job_name}/weights_final_exported.h5" \
+  --anchors_file "model_data/tiny_yolo_anchors.txt"
+
