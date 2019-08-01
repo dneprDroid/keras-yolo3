@@ -6,7 +6,7 @@ from PIL import Image
 import numpy as np
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 
-from utils.gs_util import gs_open_image
+from ..utils.gs_util import gs_open_image
 
 
 def compose(*funcs):
