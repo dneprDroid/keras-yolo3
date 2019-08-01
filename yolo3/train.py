@@ -9,8 +9,8 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
 
-from yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
-from yolo3.utils import get_random_data
+from .model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
+from .utils import get_random_data
 
 import argparse
 from utils.gs_util import gs_open, gs_copy_file, gs_file_exists
