@@ -1,13 +1,18 @@
 import xml.etree.ElementTree as ET
 from os import getcwd
+from utils.gs_util import gs_open
 
-sets=[('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
+# sets=[('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
+sets=[('2012', 'train')]
 
-classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+classes_file = gs_open('model_data/voc_classes.txt', 'r')
+# classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+classes = classes_file.read().splitlines()
 
+print('Classes: %s' % classes)
 
 def convert_annotation(year, image_id, list_file):
-    in_file = open('VOCdevkit/VOC%s/Annotations/%s.xml'%(year, image_id))
+    in_file = gs_open('VOCdevkit/VOC%s/Annotations/%s.xml'%(year, image_id))
     tree=ET.parse(in_file)
     root = tree.getroot()
 
@@ -21,11 +26,11 @@ def convert_annotation(year, image_id, list_file):
         b = (int(xmlbox.find('xmin').text), int(xmlbox.find('ymin').text), int(xmlbox.find('xmax').text), int(xmlbox.find('ymax').text))
         list_file.write(" " + ",".join([str(a) for a in b]) + ',' + str(cls_id))
 
-wd = getcwd()
+wd = getcwd().replace("\\", "/")
 
 for year, image_set in sets:
-    image_ids = open('VOCdevkit/VOC%s/ImageSets/Main/%s.txt'%(year, image_set)).read().strip().split()
-    list_file = open('%s_%s.txt'%(year, image_set), 'w')
+    image_ids = gs_open('VOCdevkit/VOC%s/ImageSets/Main/%s.txt'%(year, image_set)).read().strip().split()
+    list_file = gs_open('%s_%s.txt'%(year, image_set), 'w')
     for image_id in image_ids:
         list_file.write('%s/VOCdevkit/VOC%s/JPEGImages/%s.jpg'%(wd, year, image_id))
         convert_annotation(year, image_id, list_file)

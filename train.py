@@ -30,7 +30,7 @@ def _main():
     weights_final_path = args.weights_final
     anchors_path = args.anchors_file  # 'model_data/yolo_anchors.txt'
 
-    annotation_path = 'train.txt'
+    annotation_path = '2012_train.txt'
     if not gs_file_exists(annotation_path):
         raise Exception('Please generate the dataset file `train.txt`')
 
@@ -60,8 +60,9 @@ def _main():
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=1)
 
     val_split = 0.1
+    print("Opening annotation path: %s" % annotation_path)
     with gs_open(annotation_path) as f:
-        lines = f.readlines()
+        lines = f.read().splitlines()
     np.random.seed(10101)
     np.random.shuffle(lines)
     np.random.seed(None)
@@ -115,7 +116,7 @@ def _main():
 def get_classes(classes_path):
     '''loads the classes'''
     with gs_open(classes_path) as f:
-        class_names = f.readlines()
+        class_names = f.read().splitlines()
     class_names = [c.strip() for c in class_names]
     return class_names
 
