@@ -24,6 +24,11 @@ python yolo_video.py [video_path] [output_path (optional)]
 
 For Tiny YOLOv3, just do in a similar way, just specify model path and anchor path with `--model model_file` and `--anchors anchor_file`.
 
+### Links to the dataset
+
+https://pjreddie.com/media/files/VOCtrainval_11-May-2012.tar
+
+
 ### Usage
 Use --help to see usage of yolo_video.py:
 ```
