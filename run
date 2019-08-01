@@ -18,8 +18,8 @@ echo "Region: ${region}"
 gcloud ml-engine jobs submit training ${job_name} --job-dir ${job_dir} \
   --python-version 3.5   \
   --runtime-version 1.9  \
-  --module-name train   `# train.py` \
-  --package-path ./      \
+  --module-name trainer.train   `# train.py` \
+  --package-path ./trainer      \
   --region ${region}     \
   --distributed          \
   --scale-tier BASIC_GPU \
