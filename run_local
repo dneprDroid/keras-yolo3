@@ -11,10 +11,9 @@ job_dir=gs://${bucket_name}/${job_name}
 echo "Job dir: ${job_dir}"
 
 gcloud ai-platform local train \
- --python-version 3.5   \
- --job-dir ${job_dir}   \
+ --job-dir ${job_dir} \
  --module-name yolo3.train   `# train.py` \
- --package-path yolo3/  \
+ --package-path yolo3/ \
  --distributed \
  --  `# Next, provide the params to train.py` \
  --weights_stage "${job_dir}/weights_stage_exported.h5" \
