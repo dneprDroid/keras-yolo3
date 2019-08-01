@@ -1,6 +1,13 @@
+import argparse
 import xml.etree.ElementTree as ET
 from os import getcwd
 from utils.gs_util import gs_open
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--voc_path", help='path to VOC dataset, example: gs://VOCdevkit', type=str)
+args = parser.parse_args()
+voc_path = args.voc_path.replace("\\", "/")
 
 # sets=[('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
 sets=[('2012', 'train')]
@@ -12,7 +19,7 @@ classes = classes_file.read().splitlines()
 print('Classes: %s' % classes)
 
 def convert_annotation(year, image_id, list_file):
-    in_file = gs_open('VOCdevkit/VOC%s/Annotations/%s.xml'%(year, image_id))
+    in_file = gs_open(voc_path + '/VOC%s/Annotations/%s.xml'%(year, image_id))
     tree=ET.parse(in_file)
     root = tree.getroot()
 
@@ -26,13 +33,12 @@ def convert_annotation(year, image_id, list_file):
         b = (int(xmlbox.find('xmin').text), int(xmlbox.find('ymin').text), int(xmlbox.find('xmax').text), int(xmlbox.find('ymax').text))
         list_file.write(" " + ",".join([str(a) for a in b]) + ',' + str(cls_id))
 
-wd = getcwd().replace("\\", "/")
 
 for year, image_set in sets:
-    image_ids = gs_open('VOCdevkit/VOC%s/ImageSets/Main/%s.txt'%(year, image_set)).read().strip().split()
+    image_ids = gs_open(voc_path + '/VOC%s/ImageSets/Main/%s.txt'%(year, image_set)).read().strip().split()
     list_file = gs_open('%s_%s.txt'%(year, image_set), 'w')
     for image_id in image_ids:
-        list_file.write('%s/VOCdevkit/VOC%s/JPEGImages/%s.jpg'%(wd, year, image_id))
+        list_file.write('%s/VOC%s/JPEGImages/%s.jpg'%(voc_path, year, image_id))
         convert_annotation(year, image_id, list_file)
         list_file.write('\n')
     list_file.close()
