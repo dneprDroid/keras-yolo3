@@ -1,7 +1,6 @@
 import argparse
 import xml.etree.ElementTree as ET
-from os import getcwd
-from utils.gs_util import gs_open, gs_file_exists
+from trainer.utils.gs_util import gs_open, gs_file_exists
 
 
 parser = argparse.ArgumentParser()
