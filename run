@@ -21,7 +21,7 @@ gcloud ai-platform jobs submit training ${job_name} --job-dir ${job_dir} \
   --module-name trainer.train   `# train.py` \
   --package-path ./trainer      \
   --region ${region}     \
-  --scale-tier BASIC_GPU \
+  --config config.yaml \
   --  `# Next, provide the params for train.py` \
   --weights_stage "${job_dir}/weights_stage_exported.h5" \
   --weights_final "${job_dir}/weights_final_exported.h5" \
