@@ -10,7 +10,7 @@ echo "Job name: ${job_name}"
 job_dir=gs://${bucket_name}/${job_name}
 echo "Job dir: ${job_dir}"
 
-region=us-east4
+region=europe-west1
 echo "Region: ${region}"
 
 
