@@ -69,7 +69,7 @@ def _main():
     gpu_count = args.gpu_count
     if not gpu_count:
         gpu_count = 1
-    print("Using 1 GPU")
+    print("Using %s GPU" % gpu_count)
     if gpu_count > 1:
         model = multi_gpu_model(model_origin, gpus=gpu_count)
     else:
