@@ -3,7 +3,7 @@
 read -p "Enter bucket name: " bucket_name
 echo "Bucket name: '${bucket_name}'"
 
-job_name="ml_job_$(date +%Y%m%d_%H%M%S)"
+job_name="ml_job_$(date +%Y.%m.%d__%H_%M_%S)"
 
 echo "Job name: ${job_name}"
 
@@ -22,8 +22,12 @@ gcloud ai-platform jobs submit training ${job_name} --job-dir ${job_dir} \
   --package-path ./trainer      \
   --region ${region}     \
   --scale-tier BASIC_GPU \
-  --  `# Next, provide the params to train.py` \
+  --  `# Next, provide the params for train.py` \
   --weights_stage "${job_dir}/weights_stage_exported.h5" \
   --weights_final "${job_dir}/weights_final_exported.h5" \
-  --anchors_file "model_data/tiny_yolo_anchors.txt"
+    `# input files: ` \
+  --anchors_file "gs://${bucket_name}/tiny_yolo_anchors.txt" \
+  --annotation_path "gs://${bucket_name}/2012_train.txt" \
+  --classes_path "gs://${bucket_name}/voc_classes.txt"
+
 
