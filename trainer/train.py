@@ -8,7 +8,6 @@ from keras.layers import Input, Lambda
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
-from keras.utils import multi_gpu_model
 
 from .yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
 from .yolo3.utils import get_random_data
@@ -35,7 +34,6 @@ def _main():
     parser.add_argument("--anchors_file", type=str)
     parser.add_argument("--annotation_file", type=str)
     parser.add_argument("--classes_file", type=str)
-    parser.add_argument("--gpu_count", type=int)
 
     args, _ = parser.parse_known_args()
 
@@ -60,20 +58,12 @@ def _main():
 
     is_tiny_version = len(anchors)==6 # default setting
     if is_tiny_version:
-        model_origin = create_tiny_model(input_shape, anchors, num_classes,
+        model = create_tiny_model(input_shape, anchors, num_classes,
             freeze_body=2)  # , weights_path='model_data/tiny_yolo_weights.h5')
     else:
-        model_origin = create_model(input_shape, anchors, num_classes,
+        model = create_model(input_shape, anchors, num_classes,
             freeze_body=2)  # , weights_path='model_data/yolo_weights.h5') # make sure you know what you freeze
 
-    gpu_count = args.gpu_count
-    if not gpu_count:
-        gpu_count = 1
-    print("Using %s GPU" % gpu_count)
-    if gpu_count > 1:
-        model = multi_gpu_model(model_origin, gpus=gpu_count)
-    else:
-        model = model_origin
     logging = TensorBoard(log_dir=log_dir)
     checkpoint = ModelCheckpoint(log_dir + 'ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5',
         monitor='val_loss', save_weights_only=True, save_best_only=True, period=3)

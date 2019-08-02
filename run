@@ -21,13 +21,12 @@ gcloud ai-platform jobs submit training ${job_name} --job-dir ${job_dir} \
   --module-name trainer.train   `# train.py` \
   --package-path ./trainer      \
   --region ${region}     \
-  --config config.yaml   \
+  --scale-tier BASIC_GPU \
   --  `# Next, provide the params for train.py` \
   --weights_stage "${job_dir}/weights_stage_exported.h5" \
   --weights_final "${job_dir}/weights_final_exported.h5" \
   --anchors_file "gs://${bucket_name}/tiny_yolo_anchors.txt" \
   --annotation_file "gs://${bucket_name}/2012_train.txt" \
-  --classes_file "gs://${bucket_name}/voc_classes.txt" \
-  --gpu_count 8 `# complex_model_l_gpu - 8 NVIDIA Tesla K80 GPUs`
+  --classes_file "gs://${bucket_name}/voc_classes.txt"
 
 
