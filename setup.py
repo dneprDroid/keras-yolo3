@@ -11,7 +11,7 @@ setup(name='some_project',
       install_requires=[
           'Keras==2.1.5',
           'tensorflow-gpu==1.6.0',
-          'h5py',
+          'h5py==2.8.0',
           'numpy',
           'argparse',
           'Pillow',
