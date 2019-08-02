@@ -3,7 +3,7 @@
 read -p "Enter bucket name: " bucket_name
 echo "Bucket name: '${bucket_name}'"
 
-job_name="ml_job_$(date +%Y.%m.%d__%H_%M_%S)"
+job_name="ml_job_$(date +%Y_%m_%d___%H_%M_%S)"
 
 echo "Job name: ${job_name}"
 
