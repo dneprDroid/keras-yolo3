@@ -10,7 +10,7 @@ setup(name='some_project',
       license='Unlicense',
       install_requires=[
           'Keras==2.1.5',
-          'tensorflow==1.6.0',
+          'tensorflow-gpu==1.6.0',
           'numpy',
           'argparse',
           'Pillow',

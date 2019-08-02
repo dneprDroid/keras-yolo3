@@ -20,6 +20,13 @@ from .utils.gs_util import gs_open, gs_copy_file, gs_file_exists
  Example: `python train.py --weights_stage stage.h5 --weights_final final.h5 --anchors_path model_data/tiny_yolo_anchors.txt`
 '''
 def _main():
+    try:
+        from tensorflow.python.client import device_lib
+        print(device_lib.list_local_devices())
+        print(K.tensorflow_backend._get_available_gpus())
+    except:
+        pass
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights_stage", help='where to save the weights stage file', type=str)
     parser.add_argument("--weights_final", help='where to save the weights final file', type=str)
@@ -205,7 +212,7 @@ def data_generator(annotation_lines, batch_size, input_shape, anchors, num_class
             if i==0:
                 np.random.shuffle(annotation_lines)
             annotation_line = annotation_lines[i]
-            print("Processing %s" % annotation_line)
+            print("[b=%s][i=%s] Processing %s" % (b, i, annotation_line))
             image, box = get_random_data(annotation_line, input_shape, random=True)
             image_data.append(image)
             box_data.append(box)
