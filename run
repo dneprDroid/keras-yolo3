@@ -25,9 +25,8 @@ gcloud ai-platform jobs submit training ${job_name} --job-dir ${job_dir} \
   --  `# Next, provide the params for train.py` \
   --weights_stage "${job_dir}/weights_stage_exported.h5" \
   --weights_final "${job_dir}/weights_final_exported.h5" \
-    `# input files: ` \
   --anchors_file "gs://${bucket_name}/tiny_yolo_anchors.txt" \
-  --annotation_path "gs://${bucket_name}/2012_train.txt" \
-  --classes_path "gs://${bucket_name}/voc_classes.txt"
+  --annotation_file "gs://${bucket_name}/2012_train.txt" \
+  --classes_file "gs://${bucket_name}/voc_classes.txt"
 
 

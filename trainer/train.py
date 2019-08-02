@@ -21,20 +21,20 @@ from .utils.gs_util import gs_open, gs_copy_file, gs_file_exists
 '''
 def _main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights_stage", help='where to save the weights stage file', type=str, required=True)
-    parser.add_argument("--weights_final", help='where to save the weights final file', type=str, required=True)
+    parser.add_argument("--weights_stage", help='where to save the weights stage file', type=str)
+    parser.add_argument("--weights_final", help='where to save the weights final file', type=str)
 
-    parser.add_argument("--anchors_path", type=str, required=True)
-    parser.add_argument("--annotation_path", type=str, required=True)
-    parser.add_argument("--classes_path", type=str, required=True)
+    parser.add_argument("--anchors_file", type=str)
+    parser.add_argument("--annotation_file", type=str)
+    parser.add_argument("--classes_file", type=str)
 
     args, _ = parser.parse_known_args()
 
     weights_stage_path = args.weights_stage
     weights_final_path = args.weights_final
-    anchors_path = args.anchors_path  # 'model_data/yolo_anchors.txt'
+    anchors_path = args.anchors_file  # 'model_data/yolo_anchors.txt'
 
-    annotation_path = args.annotation_path  # '2012_train.txt'
+    annotation_path = args.annotation_file  # '2012_train.txt'
     if not gs_file_exists(annotation_path):
         raise Exception('Please generate the dataset file `train.txt`')
 
@@ -42,7 +42,7 @@ def _main():
         raise Exception('Please set the anchors file path: '
                         'model_data/tiny_yolo_anchors.txt or model_data/yolo_anchors.txt')
     log_dir = 'logs/'
-    classes_path = args.classes_path  # 'model_data/voc_classes.txt'
+    classes_path = args.classes_file  # 'model_data/voc_classes.txt'
     class_names = get_classes(classes_path)
     num_classes = len(class_names)
     anchors = get_anchors(anchors_path)
