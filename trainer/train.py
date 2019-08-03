@@ -98,7 +98,7 @@ def _main():
                 callbacks=[logging, checkpoint])
         trained_weights_stage_path = log_dir + 'trained_weights_stage_1.h5'
         model.save_weights(trained_weights_stage_path)
-        gs_copy_file(weights_stage_path, trained_weights_stage_path)
+        gs_copy_file(trained_weights_stage_path, weights_stage_path)
 
     # Unfreeze and continue training, to fine-tune.
     # Train longer if the result is not good.
