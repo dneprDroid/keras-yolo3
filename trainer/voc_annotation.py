@@ -4,7 +4,7 @@ from trainer.utils.gs_util import gs_open, gs_file_exists
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--voc_path", help='path to VOC dataset, example: gs://VOCdevkit', type=str)
+parser.add_argument("--voc_path", help='path to VOC dataset, example: gs://[YOUR_BUCKET_NAME]/VOCdevkit', type=str)
 parser.add_argument("--voc_classes_path", help='path to voc_classes.txt, example: model_data/voc_classes.txt', type=str)
 args = parser.parse_args()
 
