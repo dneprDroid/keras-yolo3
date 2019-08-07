@@ -5,15 +5,21 @@ from trainer.utils.gs_util import gs_open, gs_file_exists
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--voc_path", help='path to VOC dataset, example: gs://VOCdevkit', type=str)
+parser.add_argument("--voc_classes_path", help='path to voc_classes.txt, example: model_data/voc_classes.txt', type=str)
 args = parser.parse_args()
+
 voc_path = args.voc_path.replace("\\", "/")
+voc_classes_path = args.voc_classes_path.replace("\\", "/")
+
 if not gs_file_exists(voc_path):
     raise Exception("Can't find VOC dir at path: %s" % voc_path)
+if not gs_file_exists(voc_classes_path):
+    raise Exception("Can't find VOC classes at path: %s" % voc_classes_path)
 
 # sets=[('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
 sets=[('2012', 'train')]
 
-classes_file = gs_open('model_data/voc_classes.txt', 'r')
+classes_file = gs_open(voc_classes_path, 'r')
 # classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 classes = classes_file.read().splitlines()
 
